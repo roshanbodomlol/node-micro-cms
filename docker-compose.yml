@@ -1,0 +1,47 @@
+version: '3.7'
+services:
+  nats:
+    image: nats
+    ports:
+      - "4222:4222"
+  mongo:
+    image: mongo
+    volumes:
+      - ./db:/data/db
+  redis:
+    image: redis
+    container_name: cache
+    ports:
+      - "6379:6379"
+  api:
+    build:
+      context: .
+    image: moleculer
+    env_file: .env
+    environment:
+      NODEID: "node-cms-api"
+      SERVICES: api
+      PORT: 9090
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./:/app
+  posts:
+    build:
+      context: .
+    image: moleculer
+    env_file: .env
+    environment: 
+      SERVICES: posts
+    volumes:
+      - ./:/app
+  users:
+    build:
+      context: .
+    image: moleculer
+    env_file: .env
+    environment: 
+      SERVICES: users
+    volumes:
+      - ./:/app
+  
